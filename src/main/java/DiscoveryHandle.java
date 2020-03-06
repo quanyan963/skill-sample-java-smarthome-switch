@@ -148,7 +148,7 @@ public class DiscoveryHandle {
         String bedroomAlexaVolumeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.ModeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Volume", createCapabilityResources(""), createVolumeConfiguration());
+                , "Fox.Volume", createCapabilityResources("cat"), createVolumeConfiguration());
         return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," + bedroomAlexaBrightnessController + "," +
                 bedroomAlexaModeController + "," + bedroomAlexaTimerController + "," + bedroomAlexaVolumeController + "]";//
     }
