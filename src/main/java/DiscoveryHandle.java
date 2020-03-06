@@ -153,7 +153,7 @@ public class DiscoveryHandle {
         String bedroomAlexaModeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.ModeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Mode", createCapabilityResources(), createModeConfiguration());
+                , "Fox.Mode", createTimerCapabilityResources(), createTimerConfiguration());
 
 //        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
 //                , "Alexa.ModeController", "3"
