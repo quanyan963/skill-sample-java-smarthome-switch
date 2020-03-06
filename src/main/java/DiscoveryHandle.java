@@ -1,25 +1,9 @@
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
-import com.amazonaws.util.IOUtils;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.net.URL;
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,25 +134,32 @@ public class DiscoveryHandle {
                 , "{\"supported\": [ { \"name\": \"brightness\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + "}"
                 , null, null, null);
 
+        //音效模式
         String bedroomAlexaModeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.ModeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Mode", createTimerCapabilityResources(), createTimerConfiguration());
-
-//        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
-//                , "Alexa.ModeController", "3"
-//                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-//                , "Fox.Timer", createTimerCapabilityResources(), createTimerConfiguration());
-        return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," + bedroomAlexaBrightnessController + "," + bedroomAlexaModeController + "]";// "," + bedroomAlexaTimerController +
+                , "Fox.Mode", createCapabilityResources("sound"), createModeConfiguration());
+        //持续时间
+        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+                , "Alexa.ModeController", "3"
+                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
+                , "Fox.Timer", createCapabilityResources("duration"), createDurationConfiguration());
+        //声音大小
+        String bedroomAlexaVolumeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+                , "Alexa.ModeController", "3"
+                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
+                , "Fox.Volume", createCapabilityResources(""), createVolumeConfiguration());
+        return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," + bedroomAlexaBrightnessController + "," +
+                bedroomAlexaModeController + "," + bedroomAlexaTimerController + "," + bedroomAlexaVolumeController + "]";//
     }
 
-    private String createCapabilityResources() {
+    private String createCapabilityResources(String value) {
         return "{" +
                 "                \"friendlyNames\": [" +
                 "                  {" +
                 "                    \"@type\": \"text\"," +
                 "                    \"value\": {" +
-                "                      \"text\": \"sound\"," +
+                "                      \"text\": \""+value+"\"," +
                 "                      \"locale\": \"en-US\"" +
                 "                    }" +
                 "                  }" +
@@ -226,26 +217,12 @@ public class DiscoveryHandle {
                 "              }";
     }
 
-    private String createTimerCapabilityResources() {
-        return "{" +
-                "                \"friendlyNames\": [" +
-                "                  {" +
-                "                    \"@type\": \"text\"," +
-                "                    \"value\": {" +
-                "                      \"text\": \"timer\"," +
-                "                      \"locale\": \"en-US\"" +
-                "                    }" +
-                "                  }" +
-                "                ]" +
-                "              }";
-    }
-
-    private String createTimerConfiguration() {
+    private String createDurationConfiguration() {
         return "{" +
                 "                \"ordered\": false," +
                 "                \"supportedModes\": [" +
                 "                  {" +
-                "                    \"value\": \"Timer.None\"," +
+                "                    \"value\": \"Duration.None\"," +
                 "                    \"modeResources\": {" +
                 "                      \"friendlyNames\": [" +
                 "                        {" +
@@ -259,13 +236,13 @@ public class DiscoveryHandle {
                 "                    }" +
                 "                  }," +
                 "                  {" +
-                "                    \"value\": \"Timer.Fifteen\"," +
+                "                    \"value\": \"Duration.Fifteen\"," +
                 "                    \"modeResources\": {" +
                 "                      \"friendlyNames\": [" +
                 "                        {" +
                 "                          \"@type\": \"text\"," +
                 "                          \"value\": {" +
-                "                            \"text\": \"fifteen\"," +
+                "                            \"text\": \"fifteen minutes\"," +
                 "                            \"locale\": \"en-US\"" +
                 "                          }" +
                 "                        }" +
@@ -273,13 +250,13 @@ public class DiscoveryHandle {
                 "                    }" +
                 "                  }," +
                 "                  {" +
-                "                    \"value\": \"Timer.Thirty\"," +
+                "                    \"value\": \"Duration.Thirty\"," +
                 "                    \"modeResources\": {" +
                 "                      \"friendlyNames\": [" +
                 "                        {" +
                 "                          \"@type\": \"text\"," +
                 "                          \"value\": {" +
-                "                            \"text\": \"thirty\"," +
+                "                            \"text\": \"thirty minutes\"," +
                 "                            \"locale\": \"en-US\"" +
                 "                          }" +
                 "                        }" +
@@ -287,13 +264,210 @@ public class DiscoveryHandle {
                 "                    }" +
                 "                  }," +
                 "                  {" +
-                "                    \"value\": \"Timer.Sixty\"," +
+                "                    \"value\": \"Duration.Sixty\"," +
                 "                    \"modeResources\": {" +
                 "                      \"friendlyNames\": [" +
                 "                        {" +
                 "                          \"@type\": \"text\"," +
                 "                          \"value\": {" +
-                "                            \"text\": \"sixty\"," +
+                "                            \"text\": \"sixty minutes\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }" +
+                "                ]" +
+                "              }";
+    }
+
+    private String createVolumeConfiguration() {
+        return "{" +
+                "                \"ordered\": false," +
+                "                \"supportedModes\": [" +
+                "                  {" +
+                "                    \"value\": \"Volume.Silence\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"silence\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }," +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"mute\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.One\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level one\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.Two\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level two\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.three\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level three\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }，" +
+                "                  {" +
+                "                    \"value\": \"Volume.four\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level four\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.five\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level five\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.six\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level six\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.seven\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level seven\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.eight\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level eight\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.nine\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level nine\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.ten\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"level ten\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.up\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"up\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Volume.down\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"down\"," +
                 "                            \"locale\": \"en-US\"" +
                 "                          }" +
                 "                        }" +
