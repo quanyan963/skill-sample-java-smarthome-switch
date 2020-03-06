@@ -155,11 +155,11 @@ public class DiscoveryHandle {
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
                 , "Fox.Mode", createCapabilityResources(), createModeConfiguration());
 
-        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
-                , "Alexa.ModeController", "3"
-                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Timer", createTimerCapabilityResources(), createTimerConfiguration());
-        return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," + bedroomAlexaBrightnessController + "," + bedroomAlexaModeController + "," + bedroomAlexaTimerController + "]";//
+//        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+//                , "Alexa.ModeController", "3"
+//                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
+//                , "Fox.Timer", createTimerCapabilityResources(), createTimerConfiguration());
+        return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," + bedroomAlexaBrightnessController + "," + bedroomAlexaModeController + "]";// "," + bedroomAlexaTimerController +
     }
 
     private String createCapabilityResources() {
