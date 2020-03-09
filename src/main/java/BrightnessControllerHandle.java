@@ -42,11 +42,12 @@ public class BrightnessControllerHandle {
         //更新
         try {
             device.update(brightnessState.toPercentString());
+            ar = new AlexaResponse<Integer>("Alexa", "Response", brightnessEndpointId, brightnessToken, correlationToken,false);
+            ar.AddContextProperty("Alexa.BrightnessController","brightness",brightnessValue,500);
         } catch (AWSIotException e) {
-            e.printStackTrace();
+            ar = new AlexaResponse<Integer>("Alexa", "ErrorResponse", brightnessEndpointId, brightnessToken, correlationToken,false);
+            ar.SetPayload("{\"type\": \"INTERNAL_ERROR\",\"message\": \"A runtime exception occurred. We recommend that you always send a more specific error type.\"}");
         }
-        ar = new AlexaResponse<Integer>("Alexa", "Response", brightnessEndpointId, brightnessToken, correlationToken,false);
-        ar.AddContextProperty("Alexa.BrightnessController","brightness",brightnessValue,500);
         MqttClient.getClient().closeClient();
         return ar;
     }

@@ -50,7 +50,7 @@ public class AlexaHandler {
                     break;
 
                 case "Alexa.Discovery":
-                    ar = DiscoveryHandle.getInstance().doResponse(directive);
+                    ar = DiscoveryHandle.getInstance().doResponse(directive,correlationToken);
                     // For another way to see how to craft an AlexaResponse, have a look at AlexaResponseTest:ResponseDiscovery
                     break;
                 case "Alexa.PowerController":
@@ -59,12 +59,15 @@ public class AlexaHandler {
                 case "Alexa.BrightnessController":
                     ar = BrightnessControllerHandle.getInstance().doReasponse(directive,correlationToken);
                     break;
+                case "Alexa.RangeController":
                 case "Alexa.ModeController":
                     ar = ModeControllerHandle.getInstance().doReasponse(directive,correlationToken);
                     break;
                 default:
                     System.out.println("INVALID Namespace");
-                    ar = new AlexaResponse();
+                    ar = new AlexaResponse<String>("Alexa", "ErrorResponse", "", "", correlationToken
+                            ,false);
+                    ar.SetPayload("{\"type\": \"INVALID_DIRECTIVE\",\"message\": \"The directive is not supported by the skill.\"}");
                     break;
             }
             System.out.println("Response:");

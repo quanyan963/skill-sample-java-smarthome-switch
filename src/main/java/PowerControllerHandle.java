@@ -36,12 +36,15 @@ public class PowerControllerHandle {
         //更新
         try {
             device.update(powerState.toDesiredString());
+            ar = new AlexaResponse<String>("Alexa", "Response", powerEndpointId, powerToken, correlationToken
+                    ,false);
+            ar.AddContextProperty("Alexa.PowerController", "powerState", powerValue, 500);
+
         } catch (AWSIotException e) {
-            e.printStackTrace();
+            ar = new AlexaResponse<String>("Alexa", "ErrorResponse", powerEndpointId, powerToken, correlationToken
+                    ,false);
+            ar.SetPayload("{\"type\": \"INTERNAL_ERROR\",\"message\": \"A runtime exception occurred. We recommend that you always send a more specific error type.\"}");
         }
-        ar = new AlexaResponse<String>("Alexa", "Response", powerEndpointId, powerToken, correlationToken
-                ,false);
-        ar.AddContextProperty("Alexa.PowerController", "powerState", powerValue, 500);
         MqttClient.getClient().closeClient();
         //订阅
 //                    MyTopic myTopic = new MyTopic(topicName, qos);

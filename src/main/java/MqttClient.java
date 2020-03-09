@@ -19,8 +19,7 @@ public class MqttClient {
     public AWSIotDevice initClient(JSONObject endpoint, String thingName) {
         String clientEndpoint = "a311cdvk7hqtsk-ats.iot.us-east-1.amazonaws.com";       // replace <prefix> and <region> with your own
         String clientId = String.valueOf(System.currentTimeMillis());                              // replace with your own client ID. Use unique client IDs for concurrent connections.
-        String awsAccessKeyId = "AKIAY5HP5FM23WQVXCBI";
-        String awsSecretAccessKey = "4H19Q6ZnwmwF/s4SbgpjnpOyilAwCShLY2PVbKmu";
+
 // AWS IAM credentials could be retrieved from AWS Cognito, STS, or other secure sources
         client = new AWSIotMqttClient(clientEndpoint, clientId, awsAccessKeyId, awsSecretAccessKey);
 

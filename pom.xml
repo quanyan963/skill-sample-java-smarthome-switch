@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.amazon.alexa.smarthome.sample.switch</groupId>
-    <artifactId>skill-sample-java-smarthome-switch</artifactId>
-    <version>1.1</version>
+    <artifactId>smart-fox</artifactId>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>Alexa Smart Home Sample - Switch</name>
