@@ -28,7 +28,7 @@ public class PowerControllerHandle {
 
         //AWSIotQos qos = AWSIotQos.QOS0;
         long timeout = 5000;// milliseconds
-        State powerState = new State(new Desired("light",powerValue));
+        State powerState = new State(new Desired("device",powerValue));
         System.out.println("DATA:"+powerState.toDesiredString());
 
         //String data = "{ \"state\":{ \"desired\": { \"connect\": true }}}";

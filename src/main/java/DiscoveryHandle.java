@@ -104,6 +104,7 @@ public class DiscoveryHandle {
                 }
             } catch (Exception ex) {
                 ar = new AlexaResponse("Alexa","ErrorResponse","","",correlationToken,false);
+                ex.printStackTrace();
                 ar.SetPayload("{\"type\": \"INTERNAL_ERROR\",\"message\": \"A runtime exception occurred. We recommend that you always send a more specific error type.\"}");
                 return ar;
             }
@@ -111,6 +112,7 @@ public class DiscoveryHandle {
 
         } catch (Exception e) {
             ar = new AlexaResponse("Alexa","ErrorResponse","","",correlationToken,false);
+            e.printStackTrace();
             ar.SetPayload("{\"type\": \"INTERNAL_ERROR\",\"message\": \"A runtime exception occurred. We recommend that you always send a more specific error type.\"}");
             return ar;
         }
@@ -138,11 +140,11 @@ public class DiscoveryHandle {
     }
 
     private String createCapabilities(AlexaResponse ar, String friendlyName) {
-        String bed_room = ar.CreatePayloadEndpointCapability("AlexaInterface", "Alexa"
-                , "3", null, null, null, null);
-        String bedRoomAlexaPowerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+        String device = ar.CreatePayloadEndpointCapability("AlexaInterface", "Alexa"
+                , "3", null, null, null, null,null);
+        String alexaPowerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.PowerController", "3", "{\"supported\": [ { \"name\": \"powerState\" } ] }"
-                , null, null, null);
+                , null, null, null,null);
 
 //        String bedRoomAlexaPercentageController = ar.CreatePayloadEndpointCapability("AlexaInterface"
 //                , "Alexa.PercentageController", "3"
@@ -155,27 +157,75 @@ public class DiscoveryHandle {
 //                , null, null, null);
 
         //音效模式
-        String bedroomAlexaModeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+        String alexaModeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.ModeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Mode", createCapabilityResources("sound"), createModeConfiguration());
+                , "Fox.Mode", createCapabilityResources("sound"), createModeConfiguration(),null);
         //持续时间
-        String bedroomAlexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+        String alexaTimerController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.ModeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Timer", createCapabilityResources("duration"), createDurationConfiguration());
+                , "Fox.Timer", createCapabilityResources("duration"), createDurationConfiguration(),null);
 //        //声音大小
-//        String bedroomAlexaVolumeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+//        String alexaVolumeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
 //                , "Alexa.ModeController", "3"
 //                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
 //                , "Fox.Volume", createCapabilityResources("sound volume"), createVolumeConfiguration());
         //声音大小
-        String bedroomAlexaRangeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+        String alexaRangeController = ar.CreatePayloadEndpointCapability("AlexaInterface"
                 , "Alexa.RangeController", "3"
                 , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
-                , "Fox.Range", createRangeCapabilityResources("sound volume"), createRangeConfiguration());
-        return "[" + bed_room + ", " + bedRoomAlexaPowerController + "," +
-                bedroomAlexaModeController + "," + bedroomAlexaTimerController + "," + bedroomAlexaRangeController + "]";//+ "," + bedroomAlexaBrightnessController
+                , "Fox.Range", createCapabilityResources("sound volume"), createRangeConfiguration(),null);
+
+        //彩灯开关
+        String alexaLightsController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+                , "Alexa.ToggleController", "3"
+                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
+                , "Fox.Lights", createCapabilityResources("lights"), null, createSemanticsResources());
+
+        //彩灯暂停
+        String alexaHoldController = ar.CreatePayloadEndpointCapability("AlexaInterface"
+                , "Alexa.TimeHoldController", "3"//TimeHoldController
+                , "{\"supported\": [ { \"name\": \"Hold\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + "}"
+                , null, null, createHoldConfiguration(),null);//createCapabilityResources("lights")   "Fox.Hold"
+        return "[" + device + ", " + alexaPowerController + "," +
+                alexaModeController + "," + alexaTimerController + "," + alexaRangeController + ","
+                + alexaLightsController + "," + alexaHoldController + "]";//+ "," + bedroomAlexaBrightnessController
+    }
+
+    private String createSemanticsResources() {
+        return "{" +
+                "                \"actionMappings\": [" +
+                "                  {" +
+                "                    \"@type\": \"ActionsToDirective\"," +
+                "                    \"actions\": [\"Alexa.Actions.Close\"]," +
+                "                    \"directive\": {" +
+                "                      \"name\": \"TurnOff\"," +
+                "                      \"payload\": {}" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"@type\": \"ActionsToDirective\"," +
+                "                    \"actions\": [\"Alexa.Actions.Open\"]," +
+                "                    \"directive\": {" +
+                "                      \"name\": \"TurnOn\"," +
+                "                      \"payload\": {}" +
+                "                    }" +
+                "                  }" +
+                "                ]," +
+                "                \"stateMappings\": [" +
+                "                  {" +
+                "                    \"@type\": \"StatesToValue\"," +
+                "                    \"states\": [\"Alexa.States.Closed\"]," +
+                "                    \"value\": \"OFF\"" +
+                "                  }," +
+                "                  {" +
+                "                    \"@type\": \"StatesToValue\"," +
+                "                    \"states\": [\"Alexa.States.Open\"]," +
+                "                    \"value\": \"ON\"" +
+                "                  }  " +
+                "                ]" +
+                "              }";
     }
 
     private String createCapabilityResources(String value) {
@@ -192,17 +242,84 @@ public class DiscoveryHandle {
                 "              }";
     }
 
-    private String createRangeCapabilityResources(String value) {
-        return "{" +
-                "                \"friendlyNames\": [" +
-                "                  {" +
-                "                    \"@type\": \"text\"," +
-                "                    \"value\": {" +
-                "                      \"text\": \""+value+"\"," +
-                "                      \"locale\": \"en-US\"" +
-                "                    }" +
-                "                  }" +
-                "                ]" +
+    private String createHoldConfiguration() {
+//        return  "{" +
+//                "                \"ordered\": false," +
+//                "                \"supportedModes\": [" +
+//                "                  {" +
+//                "                    \"value\": \"Hold.Start\"," +
+//                "                    \"modeResources\": {" +
+//                "                      \"friendlyNames\": [" +
+//                "                        {" +
+//                "                          \"@type\": \"text\"," +
+//                "                          \"value\": {" +
+//                "                            \"text\": \"start\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }," +
+//                "                        {" +
+//                "                          \"@type\": \"asset\"," +
+//                "                          \"value\": {" +
+//                "                            \"assetId\": \"Alexa.Value.Open\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }," +
+//                "                        {" +
+//                "                          \"@type\": \"text\"," +
+//                "                          \"value\": {" +
+//                "                            \"text\": \"turn on\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }" +
+//                "                      ]" +
+//                "                    }" +
+//                "                  }," +
+//                "                  {" +
+//                "                    \"value\": \"Hold.Close\"," +
+//                "                    \"modeResources\": {" +
+//                "                      \"friendlyNames\": [" +
+//                "                        {" +
+//                "                          \"@type\": \"text\"," +
+//                "                          \"value\": {" +
+//                "                            \"text\": \"close\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }," +
+//                "                        {" +
+//                "                          \"@type\": \"asset\"," +
+//                "                          \"value\": {" +
+//                "                            \"assetId\": \"Alexa.Value.Close\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }," +
+//                "                        {" +
+//                "                          \"@type\": \"text\"," +
+//                "                          \"value\": {" +
+//                "                            \"text\": \"turn off\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }," +
+//                "                      ]" +
+//                "                    }" +
+//                "                  }," +
+//                "                  {" +
+//                "                    \"value\": \"Hold.Pause\"," +
+//                "                    \"modeResources\": {" +
+//                "                      \"friendlyNames\": [" +
+//                "                        {" +
+//                "                          \"@type\": \"text\"," +
+//                "                          \"value\": {" +
+//                "                            \"text\": \"Pause\"," +
+//                "                            \"locale\": \"en-US\"" +
+//                "                          }" +
+//                "                        }" +
+//                "                      ]" +
+//                "                    }" +
+//                "                  }" +
+//                "                ]" +
+//                "              }";
+        return "{\n" +
+                "                  \"allowRemoteResume\": true\n" +
                 "              }";
     }
 
@@ -487,203 +604,6 @@ public class DiscoveryHandle {
                 "                          \"@type\": \"text\"," +
                 "                          \"value\": {" +
                 "                            \"text\": \"sixty minutes\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }" +
-                "                ]" +
-                "              }";
-    }
-
-    private String createVolumeConfiguration() {
-        return "{" +
-                "                \"ordered\": false," +
-                "                \"supportedModes\": [" +
-                "                  {" +
-                "                    \"value\": \"Volume.Silence\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"silence\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }," +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"mute\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.One\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level one\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.Two\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level two\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.three\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level three\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.four\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level four\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.five\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level five\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.six\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level six\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.seven\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level seven\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.eight\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level eight\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.nine\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level nine\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.ten\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"level ten\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.up\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"up\"," +
-                "                            \"locale\": \"en-US\"" +
-                "                          }" +
-                "                        }" +
-                "                      ]" +
-                "                    }" +
-                "                  }," +
-                "                  {" +
-                "                    \"value\": \"Volume.down\"," +
-                "                    \"modeResources\": {" +
-                "                      \"friendlyNames\": [" +
-                "                        {" +
-                "                          \"@type\": \"text\"," +
-                "                          \"value\": {" +
-                "                            \"text\": \"down\"," +
                 "                            \"locale\": \"en-US\"" +
                 "                          }" +
                 "                        }" +

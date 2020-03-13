@@ -183,7 +183,7 @@ public class AlexaResponse<T> {
     }
 
     public String CreatePayloadEndpointCapability(String type, String interfaceValue, String version, String properties,
-                                                  String instance, String capabilityResources, String configuration) {
+                                                  String instance, String capabilityResources, String configuration, String semantics) {
 
         JSONObject capability = new JSONObject();
         capability.put("type", type);
@@ -195,8 +195,10 @@ public class AlexaResponse<T> {
             capability.put("properties", new JSONObject(properties));
         if (capabilityResources != null)
             capability.put("capabilityResources",new JSONObject(capabilityResources));
-        if (capabilityResources != null)
+        if (configuration != null)
             capability.put("configuration",new JSONObject(configuration));
+        if (semantics != null)
+            capability.put("semantics",new JSONObject(semantics));
         return capability.toString();
     }
 

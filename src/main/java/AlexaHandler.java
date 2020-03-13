@@ -65,7 +65,9 @@ public class AlexaHandler {
                     break;
                 default:
                     System.out.println("INVALID Namespace");
-                    ar = new AlexaResponse<String>("Alexa", "ErrorResponse", "", "", correlationToken
+                    String powerEndpointId = directive.getJSONObject("endpoint").optString("endpointId", "INVALID");
+                    String powerToken = directive.getJSONObject("endpoint").getJSONObject("scope").optString("token", "INVALID");
+                    ar = new AlexaResponse<String>("Alexa", "ErrorResponse", powerEndpointId, powerToken, correlationToken
                             ,false);
                     ar.SetPayload("{\"type\": \"INVALID_DIRECTIVE\",\"message\": \"The directive is not supported by the skill.\"}");
                     break;
