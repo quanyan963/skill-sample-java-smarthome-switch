@@ -164,7 +164,7 @@ public class AlexaResponse<T> {
 //            endpoint.put("description", "corridor Endpoint Description");
 //        }
 
-        JSONArray displayCategories = new JSONArray("[\"SWITCH\"]");
+        JSONArray displayCategories = new JSONArray("[\"SPEAKER\"]");
         endpoint.put("displayCategories", displayCategories);
         endpoint.put("manufacturerName", "Sample Manufacturer");
 

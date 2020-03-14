@@ -24,6 +24,7 @@ public class ModeControllerHandle {
         String modeEndpointId = directive.getJSONObject("endpoint").optString("endpointId", "INVALID");
         String modeToken = directive.getJSONObject("endpoint").getJSONObject("scope").optString("token", "INVALID");
         String modeStateValue = directive.getJSONObject("header").optString("name");
+        String modeNameSpace = directive.getJSONObject("header").optString("namespace");
         String modeValue = directive.getJSONObject("payload").optString("mode","Mode.Normal");
         device = MqttClient.getClient().initClient(modeEndpoint,modeEndpointId );
 
@@ -34,9 +35,22 @@ public class ModeControllerHandle {
                 modeState = doRange(modeStateValue,modeValue);
                 break;
             case "Fox.Mode":
+            case "Fox.Hold":
             case "Fox.Timer":
                 modeState = doSound_Timer(modeValue);
                 break;
+//            case "Fox.Lights":
+//                switch (modeStateValue){
+//                    case "TurnOn":
+//                        modeState = new State(new Percent("light",1));
+//                        modeValue = "ON";
+//                        break;
+//                    case "TurnOff":
+//                        modeState = new State(new Percent("light",0));
+//                        modeValue = "OFF";
+//                        break;
+//                }
+//                break;
             default:
                 modeState = null;
                 break;
@@ -47,7 +61,7 @@ public class ModeControllerHandle {
                 System.out.println("DATA:"+modeState.toPercentString());
                 device.update(modeState.toPercentString());
                 ar = new AlexaResponse<Integer>("Alexa", "Response", modeEndpointId, modeToken, correlationToken,false);
-                ar.AddContextProperty("Alexa.ModeController","mode",modeValue,500);
+                ar.AddContextProperty(modeNameSpace,"mode",modeValue,500);
             }else {
                 ar = new AlexaResponse("Alexa","ErrorResponse",modeEndpointId,modeToken,correlationToken,false);
                 ar.SetPayload("{\"type\": \"INVALID_DIRECTIVE\",\"message\": \"The directive is not supported by the skill.\"}");
@@ -92,6 +106,15 @@ public class ModeControllerHandle {
                 return modeState;
             case "Duration.Sixty":
                 modeState = new State(new Percent("duration",60));
+                return modeState;
+            case "Hold.Pause":
+                modeState = new State(new Percent("light",2));
+                return modeState;
+            case "Hold.Open":
+                modeState = new State(new Percent("light",1));
+                return modeState;
+            case "Hold.Close":
+                modeState = new State(new Percent("light",0));
                 return modeState;
             default:
                 //关闭sound

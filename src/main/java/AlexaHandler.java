@@ -60,6 +60,8 @@ public class AlexaHandler {
                     ar = BrightnessControllerHandle.getInstance().doReasponse(directive,correlationToken);
                     break;
                 case "Alexa.RangeController":
+                case "Alexa.ToggleController":
+                case "Alexa.TimeHoldController":
                 case "Alexa.ModeController":
                     ar = ModeControllerHandle.getInstance().doReasponse(directive,correlationToken);
                     break;

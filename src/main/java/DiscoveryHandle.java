@@ -185,12 +185,12 @@ public class DiscoveryHandle {
 
         //彩灯暂停
         String alexaHoldController = ar.CreatePayloadEndpointCapability("AlexaInterface"
-                , "Alexa.TimeHoldController", "3"//TimeHoldController
-                , "{\"supported\": [ { \"name\": \"Hold\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + "}"
-                , null, null, createHoldConfiguration(),null);//createCapabilityResources("lights")   "Fox.Hold"
+                , "Alexa.ModeController", "3"//TimeHoldController
+                , "{\"supported\": [ { \"name\": \"mode\" } ] ,\"proactivelyReported\":" + true + ",\"retrievable\":" + true + ",\"nonControllable\":" + false + "}"
+                , "Fox.Hold", createCapabilityResources("lights"), createHoldConfiguration(),createSemanticsResources());//createCapabilityResources("lights")   "Fox.Hold"
         return "[" + device + ", " + alexaPowerController + "," +
                 alexaModeController + "," + alexaTimerController + "," + alexaRangeController + ","
-                + alexaLightsController + "," + alexaHoldController + "]";//+ "," + bedroomAlexaBrightnessController
+                + alexaHoldController + "]";//+ alexaLightsController + ","
     }
 
     private String createSemanticsResources() {
@@ -200,16 +200,27 @@ public class DiscoveryHandle {
                 "                    \"@type\": \"ActionsToDirective\"," +
                 "                    \"actions\": [\"Alexa.Actions.Close\"]," +
                 "                    \"directive\": {" +
-                "                      \"name\": \"TurnOff\"," +
-                "                      \"payload\": {}" +
+                "                      \"name\": \"SetMode\"," +
+                "                      \"payload\": {" +
+                "                           \"mode\": \"Hold.Close\"}" +
                 "                    }" +
                 "                  }," +
+//                "                  {" +
+//                "                    \"@type\": \"ActionsToDirective\"," +
+//                "                    \"actions\": [\"Alexa.Actions.Close\"]," +
+//                "                    \"directive\": {" +
+//                "                      \"name\": \"SetMode\"," +
+//                "                      \"payload\": {" +
+//                "                           \"mode\": \"Hold.Pause\"}" +
+//                "                    }" +
+//                "                  }," +
                 "                  {" +
                 "                    \"@type\": \"ActionsToDirective\"," +
                 "                    \"actions\": [\"Alexa.Actions.Open\"]," +
                 "                    \"directive\": {" +
-                "                      \"name\": \"TurnOn\"," +
-                "                      \"payload\": {}" +
+                "                      \"name\": \"SetMode\"," +
+                "                      \"payload\": {" +
+                "                           \"mode\": \"Hold.Open\"}" +
                 "                    }" +
                 "                  }" +
                 "                ]," +
@@ -217,12 +228,17 @@ public class DiscoveryHandle {
                 "                  {" +
                 "                    \"@type\": \"StatesToValue\"," +
                 "                    \"states\": [\"Alexa.States.Closed\"]," +
-                "                    \"value\": \"OFF\"" +
+                "                    \"value\": \"Hold.Close\"" +
                 "                  }," +
+//                "                  {" +
+//                "                    \"@type\": \"StatesToValue\"," +
+//                "                    \"states\": [\"Alexa.States.Closed\"]," +
+//                "                    \"value\": \"Hold.Pause\"" +
+//                "                  }," +
                 "                  {" +
                 "                    \"@type\": \"StatesToValue\"," +
                 "                    \"states\": [\"Alexa.States.Open\"]," +
-                "                    \"value\": \"ON\"" +
+                "                    \"value\": \"Hold.Open\"" +
                 "                  }  " +
                 "                ]" +
                 "              }";
@@ -243,84 +259,54 @@ public class DiscoveryHandle {
     }
 
     private String createHoldConfiguration() {
-//        return  "{" +
-//                "                \"ordered\": false," +
-//                "                \"supportedModes\": [" +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Start\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"start\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }," +
-//                "                        {" +
-//                "                          \"@type\": \"asset\"," +
-//                "                          \"value\": {" +
-//                "                            \"assetId\": \"Alexa.Value.Open\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }," +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"turn on\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }" +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }," +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Close\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"close\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }," +
-//                "                        {" +
-//                "                          \"@type\": \"asset\"," +
-//                "                          \"value\": {" +
-//                "                            \"assetId\": \"Alexa.Value.Close\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }," +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"turn off\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }," +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }," +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Pause\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"Pause\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }" +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }" +
-//                "                ]" +
-//                "              }";
-        return "{\n" +
-                "                  \"allowRemoteResume\": true\n" +
+        return  "{" +
+                "                \"ordered\": false," +
+                "                \"supportedModes\": [" +
+                "                  {" +
+                "                    \"value\": \"Hold.Open\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"asset\"," +
+                "                          \"value\": {" +
+                "                            \"assetId\": \"Alexa.Value.Open\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Hold.Close\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"asset\"," +
+                "                          \"value\": {" +
+                "                            \"assetId\": \"Alexa.Value.Close\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }," +
+                "                  {" +
+                "                    \"value\": \"Hold.Pause\"," +
+                "                    \"modeResources\": {" +
+                "                      \"friendlyNames\": [" +
+                "                        {" +
+                "                          \"@type\": \"text\"," +
+                "                          \"value\": {" +
+                "                            \"text\": \"Pause\"," +
+                "                            \"locale\": \"en-US\"" +
+                "                          }" +
+                "                        }" +
+                "                      ]" +
+                "                    }" +
+                "                  }" +
+                "                ]" +
                 "              }";
+//        return "{\n" +
+//                "                  \"allowRemoteResume\": true\n" +
+//                "              }";
     }
 
     private String createRangeConfiguration(){
