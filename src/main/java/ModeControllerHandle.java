@@ -29,28 +29,29 @@ public class ModeControllerHandle {
         device = MqttClient.getClient().initClient(modeEndpoint,modeEndpointId );
 
 
-        State modeState;
+        State modeState = null;
         switch (instance){
             case "Fox.Range":
-                modeState = doRange(modeStateValue,modeValue);
+                int rangeValue = directive.getJSONObject("payload").optInt("rangeValue",0);
+                modeState = doRange(modeStateValue,rangeValue);
                 break;
             case "Fox.Mode":
             case "Fox.Hold":
             case "Fox.Timer":
                 modeState = doSound_Timer(modeValue);
                 break;
-//            case "Fox.Lights":
-//                switch (modeStateValue){
-//                    case "TurnOn":
-//                        modeState = new State(new Percent("light",1));
-//                        modeValue = "ON";
-//                        break;
-//                    case "TurnOff":
-//                        modeState = new State(new Percent("light",0));
-//                        modeValue = "OFF";
-//                        break;
-//                }
-//                break;
+            case "Fox.Lights":
+                switch (modeStateValue){
+                    case "TurnOn":
+                        modeState = new State(new Percent("light",1));
+                        modeValue = "ON";
+                        break;
+                    case "TurnOff":
+                        modeState = new State(new Percent("light",0));
+                        modeValue = "OFF";
+                        break;
+                }
+                break;
             default:
                 modeState = null;
                 break;
@@ -123,9 +124,9 @@ public class ModeControllerHandle {
         }
     }
 
-    private State doRange(String modeStateValue, String modeValue) {
+    private State doRange(String modeStateValue, int modeValue) {
         State modeState;
-        int value = Integer.parseInt(modeValue);
+        int value = modeValue;
         switch (modeStateValue){
             case "AdjustRangeValue":
                 try {
