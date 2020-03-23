@@ -36,6 +36,7 @@ public class ModeControllerHandle {
                 modeState = doRange(modeStateValue,rangeValue);
                 break;
             case "Fox.Mode":
+            case "Fox.Sound":
             case "Fox.Hold":
             case "Fox.Timer":
                 modeState = doSound_Timer(modeValue);
@@ -108,14 +109,35 @@ public class ModeControllerHandle {
             case "Duration.Sixty":
                 modeState = new State(new Percent("duration",60));
                 return modeState;
-            case "Hold.Pause":
+//            case "Hold.Pause":
+//                modeState = new State(new Percent("light",2));
+//                return modeState;
+//            case "Hold.Open":
+//                modeState = new State(new Percent("light",1));
+//                return modeState;
+            case "Mode.Red":
                 modeState = new State(new Percent("light",2));
                 return modeState;
-            case "Hold.Open":
-                modeState = new State(new Percent("light",1));
+            case "Mode.Orange":
+                modeState = new State(new Percent("light",3));
                 return modeState;
-            case "Hold.Close":
-                modeState = new State(new Percent("light",0));
+            case "Mode.Yellow":
+                modeState = new State(new Percent("light",4));
+                return modeState;
+            case "Mode.Green":
+                modeState = new State(new Percent("light",5));
+                return modeState;
+            case "Mode.Cyan":
+                modeState = new State(new Percent("light",6));
+                return modeState;
+            case "Mode.Blue":
+                modeState = new State(new Percent("light",7));
+                return modeState;
+            case "Mode.Violet":
+                modeState = new State(new Percent("light",8));
+                return modeState;
+            case "Mode.Full":
+                modeState = new State(new Percent("light",9));
                 return modeState;
             default:
                 //关闭sound

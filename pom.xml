@@ -7,7 +7,7 @@
 
     <groupId>com.amazon.alexa.smarthome.sample.switch</groupId>
     <artifactId>smart-fox</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <packaging>jar</packaging>
 
     <name>Alexa Smart Home Sample - Switch</name>
