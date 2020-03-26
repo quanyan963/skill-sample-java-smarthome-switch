@@ -44,7 +44,7 @@ public class ModeControllerHandle {
             case "Fox.Lights":
                 switch (modeStateValue){
                     case "TurnOn":
-                        modeState = new State(new Percent("light",1));
+                        modeState = new State(new Percent("light",10));
                         modeValue = "ON";
                         break;
                     case "TurnOff":
@@ -140,7 +140,7 @@ public class ModeControllerHandle {
                 modeState = new State(new Percent("light",9));
                 return modeState;
             case "Mode.Full":
-                modeState = new State(new Percent("light",10));
+                modeState = new State(new Percent("light",1));
                 return modeState;
             default:
                 //关闭sound
