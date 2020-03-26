@@ -136,8 +136,11 @@ public class ModeControllerHandle {
             case "Mode.Violet":
                 modeState = new State(new Percent("light",8));
                 return modeState;
-            case "Mode.Full":
+            case "Mode.White":
                 modeState = new State(new Percent("light",9));
+                return modeState;
+            case "Mode.Full":
+                modeState = new State(new Percent("light",10));
                 return modeState;
             default:
                 //关闭sound
