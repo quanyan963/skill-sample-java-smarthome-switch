@@ -162,15 +162,15 @@ public class ModeControllerHandle {
                         case 0:
                             value = value < 0 ? 0 : value;
                             break;
-                        case 10:
-                            value = value > 0 ? 10 : 10 - value;
+                        case 9:
+                            value = value > 0 ? 9 : 9 - value;
                             break;
                         default:
                             value = resultData + value;
                             if (value < 0){
                                 value = 0;
-                            }else if (value > 10){
-                                value = 10;
+                            }else if (value > 9){
+                                value = 9;
                             }
                             break;
                     }
@@ -181,8 +181,8 @@ public class ModeControllerHandle {
             default:
                 if (value < 0){
                     value = 0;
-                }else if (value > 10){
-                    value = 10;
+                }else if (value > 9){
+                    value = 9;
                 }
                 break;
         }

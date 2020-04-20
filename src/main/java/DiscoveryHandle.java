@@ -413,67 +413,16 @@ public class DiscoveryHandle {
                 "              }";
     }
 
-//    private String createHoldConfiguration() {
-//        return  "{" +
-//                "                \"ordered\": false," +
-//                "                \"supportedModes\": [" +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Close\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"asset\"," +
-//                "                          \"value\": {" +
-//                "                            \"assetId\": \"Alexa.Value.Close\"" +
-//                "                          }" +
-//                "                        }" +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }," +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Open\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"asset\"," +
-//                "                          \"value\": {" +
-//                "                            \"assetId\": \"Alexa.Value.Open\"" +
-//                "                          }" +
-//                "                        }" +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }," +
-//                "                  {" +
-//                "                    \"value\": \"Hold.Pause\"," +
-//                "                    \"modeResources\": {" +
-//                "                      \"friendlyNames\": [" +
-//                "                        {" +
-//                "                          \"@type\": \"text\"," +
-//                "                          \"value\": {" +
-//                "                            \"text\": \"Pause\"," +
-//                "                            \"locale\": \"en-US\"" +
-//                "                          }" +
-//                "                        }" +
-//                "                      ]" +
-//                "                    }" +
-//                "                  }" +
-//                "                ]" +
-//                "              }";
-////        return "{\n" +
-////                "                  \"allowRemoteResume\": true\n" +
-////                "              }";
-//    }
-
     private String createRangeConfiguration(){
         return "{" +
                 "                \"supportedRange\": {" +
                 "                  \"minimumValue\": 0," +
-                "                  \"maximumValue\": 10," +
+                "                  \"maximumValue\": 9," +
                 "                  \"precision\": 1" +
                 "                }," +
                 "                \"presets\": [" +
                 "                  {" +
-                "                    \"rangeValue\": 10," +
+                "                    \"rangeValue\": 9," +
                 "                    \"presetResources\": {" +
                 "                      \"friendlyNames\": [" +
                 "                        {" +
